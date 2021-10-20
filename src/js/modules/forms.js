@@ -1,13 +1,22 @@
 const forms = () => {
 
 	const $forms = document.querySelectorAll('form'),
-		$inputs = document.querySelectorAll('input');
+		$inputs = document.querySelectorAll('input'),
+		$phoneInput = document.querySelectorAll('input[name="user_phone"]');
 
 	const message = {
 		loading: 'Загрузка...',
 		success: 'Ваше сообщщение отправленно',
 		fail: 'Ошибка'
 	};
+
+	//Валидация поля input номер телефона
+	$phoneInput.forEach(item => {
+		item.addEventListener('input', () => {
+			item.value = item.value.replace(/\D/, '');
+		});
+
+	});
 
 	const postData = async (url, data) => {
 		document.querySelector('.status').innerHTML = message.loading;
@@ -18,7 +27,12 @@ const forms = () => {
 		});
 
 		return await result.text();
+	};
 
+	const clearInputForm = () => {
+		$inputs.forEach(itemInput => {
+			itemInput.value = '';
+		});
 	};
 
 	$forms.forEach(item => {
@@ -41,7 +55,10 @@ const forms = () => {
 					statusMessage.textContent = message.fail;
 				})
 				.finally(() => {
-					$forms.reset();
+					clearInputForm();
+					setTimeout(() => {
+						statusMessage.remove();
+					}, 2000);
 				});
 
 		});
