@@ -1,8 +1,10 @@
-const forms = () => {
+import checkNumberForm from './checkNumberForm';
+
+const forms = (state) => {
 
 	const $forms = document.querySelectorAll('form'),
-		$inputs = document.querySelectorAll('input'),
-		$phoneInput = document.querySelectorAll('input[name="user_phone"]');
+		$inputs = document.querySelectorAll('input');
+	// $phoneInput = document.querySelectorAll('input[name="user_phone"]');
 
 	const message = {
 		loading: 'Загрузка...',
@@ -11,12 +13,14 @@ const forms = () => {
 	};
 
 	//Валидация поля input номер телефона
-	$phoneInput.forEach(item => {
-		item.addEventListener('input', () => {
-			item.value = item.value.replace(/\D/, '');
-		});
+	checkNumberForm('input[name="user_phone"]');
+	//Валидация поля input номер телефона
+	/* 	$phoneInput.forEach(item => {
+			item.addEventListener('input', () => {
+				item.value = item.value.replace(/\D/, '');
+			});
 
-	});
+		}); */
 
 	const postData = async (url, data) => {
 		document.querySelector('.status').innerHTML = message.loading;
@@ -28,11 +32,19 @@ const forms = () => {
 
 		return await result.text();
 	};
-
+	
+	// чистим поля инпутов в формах
 	const clearInputForm = () => {
 		$inputs.forEach(itemInput => {
 			itemInput.value = '';
 		});
+	};
+
+	// чистим объект state
+	const clearState = () => {
+		for (let key in state) {
+			delete state[key];
+		}
 	};
 
 	$forms.forEach(item => {
@@ -45,6 +57,14 @@ const forms = () => {
 			item.appendChild(statusMessage);
 
 			const formData = new FormData(item);
+			// добавляем данные из формы calc
+			if (item.getAttribute('data-atribut') == "end") {
+				for (let key in state) {
+					formData.append(key, state[key]);
+				}
+
+				clearState();
+			}
 
 			postData('assets/server.php', formData)
 				.then(result => {
@@ -59,6 +79,7 @@ const forms = () => {
 					setTimeout(() => {
 						statusMessage.remove();
 					}, 2000);
+					clearState();
 				});
 
 		});

@@ -1,4 +1,4 @@
-const tabs = (tabsSelrctor, parentsSelector, contantSelector, activSelector) => {
+const tabs = (tabsSelrctor, parentsSelector, contantSelector, activSelector, display = "block") => {
 	const $tabs = document.querySelectorAll(tabsSelrctor),
 		$parentElement = document.querySelector(parentsSelector),
 		$contant = document.querySelectorAll(contantSelector);
@@ -17,7 +17,7 @@ const tabs = (tabsSelrctor, parentsSelector, contantSelector, activSelector) => 
 	}
 
 	function showClassActiv(i = 0) {
-		$contant[i].style.display = 'block';
+		$contant[i].style.display = display;
 		$tabs[i].classList.add(activSelector);
 	}
 
